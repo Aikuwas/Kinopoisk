@@ -1,4 +1,4 @@
-const API_KEY = 'b12229ad-6c43-4ed9-983e-6f37c214c2df'
+const API_KEY = '8a91212f-251a-46ed-89c2-08e085db7629'
 const BASE_URL = 'https://kinopoiskapiunofficial.tech/api'
 const API_URL_POPULAR = BASE_URL + '/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page='
 const API_URL_SEARCH = BASE_URL + '/v2.1/films/search-by-keyword?keyword='
@@ -10,6 +10,7 @@ const output = document.querySelector('.output')
 const paginationWrap = document.querySelector('.paginationWrap')
 const form = document.querySelector('form')
 const input = document.querySelector('input')
+const tops = document.querySelector('.tops')
 
 
 //states
@@ -102,11 +103,18 @@ const pagination = (num) => {
 
             state ? getMovies(API_URL_SEARCH + state + '&page=' + el)
                 : getMovies(API_URL_POPULAR + el)
+
+            tops.addEventListener('click', () => {
+                getMovies(API_URL_POPULAR)
+                activeBtn = 1
+                state = ''
+            })
         })
         paginationWrap.append(button)
     })
 
 }
+
 
 form.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -123,8 +131,6 @@ const getDetails = async (id) => {
             },
         })
         const response = await request.json()
-        console.log(id);
-        console.log(response);
         renderDetails(response.description, response.posterUrl)
 
 
@@ -138,9 +144,9 @@ const renderDetails = (text, image) => {
     const p = document.createElement('p')
     const img = document.createElement('img')
     const btn = document.createElement('button')
-    const tops = document.createElement('button')
+   
 
-    tops.className = 'tops'
+    
     btn.className = 'btn'
     img.className = 'image'
 
@@ -157,8 +163,11 @@ const renderDetails = (text, image) => {
           }
     })
 
+    
 
     output.append(p, img, btn)
 }
+
+
 
 
