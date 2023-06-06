@@ -4,7 +4,7 @@ const API_URL_POPULAR = BASE_URL + '/v2.2/films/top?type=TOP_100_POPULAR_FILMS&p
 const API_URL_SEARCH = BASE_URL + '/v2.1/films/search-by-keyword?keyword='
 const API_DETAILS = BASE_URL + '/v2.2/films/'
 const SIMILARS = '/similars'
-
+const paramss = '&page='
 
 const output = document.querySelector('.output')
 const paginationWrap = document.querySelector('.paginationWrap')
@@ -47,8 +47,7 @@ const getMovies = async (url) => {
         const response = await request.json()
         console.log(response);
         renderMovies(response.films);
-        
-        pagination(response.pagesCount)
+        conditionalRenderOfPagination(response.pagesCount)
     } catch (e) {
         console.log(e)
     }
@@ -65,13 +64,14 @@ const renderMovies = (data) => {
         const res = result.join(' ')
         
         const div = document.createElement('div')
-        div.className = 'film'
         const krug = document.createElement('div')
-        krug.className = 'krug'
         const img = document.createElement('img')
         const text = document.createElement('h6')
-        text.className = 'janr'
         const name = document.createElement('p')
+        
+        div.className = 'film'
+        krug.className = 'krug'
+        text.className = 'janr'
         text.textContent = res
         name.textContent = el.nameRu
         img.src = el.posterUrl
@@ -101,13 +101,14 @@ const pagination = (num) => {
             activeBtn = el
 
 
-            state ? getMovies(API_URL_SEARCH + state + '&page=' + el)
+            state ? getMovies(API_URL_SEARCH + state + paramss + el)
                 : getMovies(API_URL_POPULAR + el)
 
             tops.addEventListener('click', () => {
                 getMovies(API_URL_POPULAR)
                 activeBtn = 1
-                state = ''
+                state = '';
+                input.value= '';
             })
         })
         paginationWrap.append(button)
@@ -119,6 +120,7 @@ const pagination = (num) => {
 form.addEventListener('submit', (e) => {
     e.preventDefault()
     state = input.value
+    activeBtn = 1
 
     getMovies(API_URL_SEARCH + input.value)
 })
@@ -149,21 +151,21 @@ const renderDetails = (text, image) => {
     
     btn.className = 'btn'
     img.className = 'image'
-
     btn.textContent = 'back'
+
+    
     img.src = image
     p.textContent = text
     
 
     btn.addEventListener('click', () => {
         if (input.value) {
-            getMovies(API_URL_SEARCH + input.value + '&page=' +activeBtn);
+            getMovies(API_URL_SEARCH + input.value + '&page=' + activeBtn);
           } else {
             getMovies(API_URL_POPULAR + activeBtn);
           }
-    })
 
-    
+    })
 
     output.append(p, img, btn)
 }
